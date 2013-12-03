@@ -15,7 +15,6 @@ Port ledThree (3);
 PortI2C myI2C (4);
 LiquidCrystalI2C lcd (myI2C);
 int temp;
-//int pkg;
 int data;
 byte y =0;
 byte r = 0;
@@ -31,7 +30,6 @@ int yCount = 0;
 
 unsigned long interval = 150000;
 unsigned long previousMillis;
-
 
 void setup () {
   lcd.begin(20, 4);
@@ -50,8 +48,8 @@ void setup () {
 
 void loop () {
   set_sleep_mode(SLEEP_MODE_IDLE);
-sleep_mode();
-unsigned long currentMillis = millis();
+  sleep_mode();
+  unsigned long currentMillis = millis();
   backlightSwitch=ledTwo.digiRead();
   if (backlightSwitch == LOW)
     lcd.noBacklight();
