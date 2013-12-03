@@ -56,11 +56,13 @@ void loop () {
   else
     lcd.backlight();
     
-  if (currentMillis-previousMillis >interval)
+  if (currentMillis-previousMillis >interval){
     yellowLed();
+    previousMillis=currentMillis;
+  }
 
   if (rf12_recvDone() && rf12_crc == 0) {
-    previousMillis=currentMillis;
+    
 
      if (tmp==0)
      {
@@ -131,9 +133,8 @@ void yellowLed()
   ledOne.digiWrite(0);
   ledTwo.digiWrite2(1);
   ledThree.digiWrite(0);
-  yCount++;
-
   if(y==0 || r==1)
+  yCount++;
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print(F("Check sensor!"));
