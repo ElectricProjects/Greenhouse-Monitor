@@ -29,6 +29,7 @@ int pkg3=0;
 int yCount = 0;
 
 unsigned long interval = 150000;
+
 unsigned long previousMillis;
 
 #define NOTE_C4  262
@@ -50,9 +51,19 @@ void setup () {
   ledTwo.digiWrite(1);
   ledTwo.digiWrite2(0);
   ledThree.digiWrite(0);
+  
+  //test only - remove when working
+   for (int thisNote = 0; thisNote < 3; thisNote++) {
+      int noteDuration = 1000/noteDurations[thisNote];
+      tone(4, melody2[thisNote],noteDuration);//pin 4 or port 1 digital pin
+      int pauseBetweenNotes = noteDuration * 1.30;
+      delay(pauseBetweenNotes);
+      noTone(4);
+    }
 }
 
 void loop () {
+  noTone(4);
   set_sleep_mode(SLEEP_MODE_IDLE);
   sleep_mode();
   unsigned long currentMillis = millis();
@@ -68,7 +79,7 @@ void loop () {
   }
 
   if (rf12_recvDone() && rf12_crc == 0) {
-
+     previousMillis=currentMillis;
 
     if (tmp==0)
     {
