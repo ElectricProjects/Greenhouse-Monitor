@@ -20,7 +20,7 @@ byte y =0;
 byte r = 0;
 byte x = 0;
 byte threshold= 34;
-byte threshold2= 71;
+byte threshold2= 95;
 int backlightSwitch;
 int tmpHigh;
 int tmpLow;
@@ -55,16 +55,6 @@ void setup () {
   ledTwo.digiWrite(1);
   ledTwo.digiWrite2(0);
   ledThree.digiWrite2(0);
-
-  //test only - remove when working
-  for (int thisNote = 0; thisNote < 2; thisNote++) {
-    int noteDuration = 1000/noteDurations[thisNote];
-    tone(6, melody2[thisNote],noteDuration);//pin 6 or port 1 digital pin
-    int pauseBetweenNotes = noteDuration * 1.30;
-    delay(pauseBetweenNotes);
-    noTone(6);
-    Serial.println("toning");
-  }
 }
 
 void loop () {
@@ -119,12 +109,6 @@ void loop () {
       greenLed();
       lcd.setCursor(14, 2);
       lcd.print(rf12_data[0]);
-      lcd.setCursor(4, 1);
-      lcd.print(pkg1);
-      lcd.setCursor(12, 1);
-      lcd.print(pkg2);
-      lcd.setCursor(18, 1);
-      lcd.print(yCount);
       lcd.setCursor(6, 3);
       lcd.print(tmpHigh);
       lcd.setCursor(15, 3);
@@ -206,11 +190,7 @@ void homeScreen()
   lcd.clear();
   lcd.print(F("Snowdrift Farms"));
   lcd.setCursor(0, 1);
-  lcd.print(F("P1:"));
-  lcd.setCursor(8, 1);
-  lcd.print(F("P2:"));
-  lcd.setCursor(15, 1);
-  lcd.print(F("Y:"));
+  lcd.print(F("Greenhouse Monitor"));
   lcd.setCursor(0, 2);
   lcd.print(F("Current Temp: "));
   lcd.setCursor(0, 3);
