@@ -18,7 +18,9 @@ int temp;
 int data;
 byte y =0;
 byte r = 0;
+byte x = 0;
 byte threshold= 34;
+byte threshold2= 71;
 int backlightSwitch;
 int tmpHigh;
 int tmpLow;
@@ -33,8 +35,10 @@ unsigned long previousMillis;
 
 #define NOTE_G5  784
 #define NOTE_A3  220
-int melody2[] = {NOTE_G5, NOTE_A3};
-int noteDurations[] = {6, 6 };
+int melody2[] = {
+  NOTE_G5, NOTE_A3};
+int noteDurations[] = {
+  6, 6 };
 
 void setup () {
   Serial.begin(57600);
@@ -45,25 +49,27 @@ void setup () {
   ledTwo.mode2(OUTPUT); // analog pin for yellow led
   ledThree.mode(OUTPUT); //digital pin for speaker
   ledThree.mode2(OUTPUT); // analog pin for red led
-  
+
   rf12_initialize('R', RF12_433MHZ, 100);
-  ledOne.digiWrite2(1);
+  ledOne.digiWrite(1);
   ledTwo.digiWrite(1);
   ledTwo.digiWrite2(0);
   ledThree.digiWrite2(0);
-  
+
   //test only - remove when working
-   for (int thisNote = 0; thisNote < 2; thisNote++) {
-      int noteDuration = 1000/noteDurations[thisNote];
-      tone(6, melody2[thisNote],noteDuration);//pin 6 or port 1 digital pin
-      int pauseBetweenNotes = noteDuration * 1.30;
-      delay(pauseBetweenNotes);
-      noTone(6);
-      Serial.println("toning");
-    }
+  for (int thisNote = 0; thisNote < 2; thisNote++) {
+    int noteDuration = 1000/noteDurations[thisNote];
+    tone(6, melody2[thisNote],noteDuration);//pin 6 or port 1 digital pin
+    int pauseBetweenNotes = noteDuration * 1.30;
+    delay(pauseBetweenNotes);
+    noTone(6);
+    Serial.println("toning");
+  }
 }
 
 void loop () {
+  noTone(6);
+  Serial.println("Main loop");
   set_sleep_mode(SLEEP_MODE_IDLE);
   sleep_mode();
   unsigned long currentMillis = millis();
@@ -79,7 +85,7 @@ void loop () {
   }
 
   if (rf12_recvDone() && rf12_crc == 0) {
-     previousMillis=currentMillis;
+    previousMillis=currentMillis;
     if (tmp==0)
     {
       tmp=1;
@@ -103,7 +109,7 @@ void loop () {
     if(rf12_data[0] >tmpHigh)
       tmpHigh=rf12_data[0];
 
-    if(rf12_data[0]<=threshold)
+    if(rf12_data[0]<=threshold || rf12_data[0]>=threshold2)
     {
       redLed();
     }
@@ -133,14 +139,14 @@ void loop () {
 
 void greenLed()
 {
-  ledOne.digiWrite2(1);
+  ledOne.digiWrite(1);
   ledTwo.digiWrite2(0);
-  ledThree.digiWrite(0); 
-
+  ledThree.digiWrite2(0); 
   if (y==1 || r==1){
     homeScreen(); 
     y=0; 
     r=0;
+    x=0;
   }
 }
 
@@ -148,9 +154,10 @@ void yellowLed()
 {
   ledOne.digiWrite(0);
   ledTwo.digiWrite2(1);
-  ledThree.digiWrite(0);
+  ledThree.digiWrite2(0);
   if(y==0 || r==1)
     yCount++;
+    
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print(F("Check sensor!"));
@@ -160,14 +167,14 @@ void yellowLed()
   lcd.print(F("recharging."));
   y=1;
   r=0;
-
+  x=0;
 }
 
 void redLed()
 {
   ledOne.digiWrite(0);
   ledTwo.digiWrite2(0);
-  ledThree.digiWrite(1);
+  ledThree.digiWrite2(1);
   if(r==0 || y==1){
     lcd.clear();
     lcd.setCursor(0, 0);
@@ -180,14 +187,17 @@ void redLed()
     lcd.print(F("F"));
     r=1;
     y=0;
-
-    for (int thisNote = 0; thisNote < 3; thisNote++) {
-      int noteDuration = 1000/noteDurations[thisNote];
-      tone(6, melody2[thisNote],noteDuration);//pin 6 or port 3 digital pin
-      int pauseBetweenNotes = noteDuration * 1.30;
-      delay(pauseBetweenNotes);
-      noTone(6);
-    }
+  }
+  
+   if (x==0){
+      x++;
+      for (int thisNote = 0; thisNote < 2; thisNote++) {
+        int noteDuration = 1000/noteDurations[thisNote];
+        tone(6, melody2[thisNote],noteDuration);//pin 6 or port 3 digital pin
+        int pauseBetweenNotes = noteDuration * 1.30;
+        delay(pauseBetweenNotes);
+        noTone(6);        
+      }
   }
 }
 
@@ -208,6 +218,7 @@ void homeScreen()
   lcd.setCursor(10, 3);
   lcd.print(F("Low:"));
 }
+
 
 
 
