@@ -29,41 +29,41 @@ int pkg3=0;
 int yCount = 0;
 
 unsigned long interval = 150000;
-
 unsigned long previousMillis;
 
-#define NOTE_C4  262
-
-int melody2[] = {NOTE_C4, NOTE_C4, NOTE_C4};
-
-int noteDurations[] = {4, 4, 4 };
+#define NOTE_G5  784
+#define NOTE_A3  220
+int melody2[] = {NOTE_G5, NOTE_A3};
+int noteDurations[] = {6, 6 };
 
 void setup () {
+  Serial.begin(57600);
   lcd.begin(20, 4);
   homeScreen();
-  ledOne.mode(OUTPUT);
+  ledOne.mode(OUTPUT); // digital pin for green led
   ledTwo.mode(INPUT); // digital pin for backlight switch
-  ledTwo.mode2(OUTPUT); // analog pin for led
-  ledThree.mode(OUTPUT);
-  Serial.begin(57600);
+  ledTwo.mode2(OUTPUT); // analog pin for yellow led
+  ledThree.mode(OUTPUT); //digital pin for speaker
+  ledThree.mode2(OUTPUT); // analog pin for red led
+  
   rf12_initialize('R', RF12_433MHZ, 100);
-  ledOne.digiWrite(1);
+  ledOne.digiWrite2(1);
   ledTwo.digiWrite(1);
   ledTwo.digiWrite2(0);
-  ledThree.digiWrite(0);
+  ledThree.digiWrite2(0);
   
   //test only - remove when working
-   for (int thisNote = 0; thisNote < 3; thisNote++) {
+   for (int thisNote = 0; thisNote < 2; thisNote++) {
       int noteDuration = 1000/noteDurations[thisNote];
-      tone(4, melody2[thisNote],noteDuration);//pin 4 or port 1 digital pin
+      tone(6, melody2[thisNote],noteDuration);//pin 6 or port 1 digital pin
       int pauseBetweenNotes = noteDuration * 1.30;
       delay(pauseBetweenNotes);
-      noTone(4);
+      noTone(6);
+      Serial.println("toning");
     }
 }
 
 void loop () {
-  noTone(4);
   set_sleep_mode(SLEEP_MODE_IDLE);
   sleep_mode();
   unsigned long currentMillis = millis();
@@ -80,7 +80,6 @@ void loop () {
 
   if (rf12_recvDone() && rf12_crc == 0) {
      previousMillis=currentMillis;
-
     if (tmp==0)
     {
       tmp=1;
@@ -134,7 +133,7 @@ void loop () {
 
 void greenLed()
 {
-  ledOne.digiWrite(1);
+  ledOne.digiWrite2(1);
   ledTwo.digiWrite2(0);
   ledThree.digiWrite(0); 
 
@@ -184,10 +183,10 @@ void redLed()
 
     for (int thisNote = 0; thisNote < 3; thisNote++) {
       int noteDuration = 1000/noteDurations[thisNote];
-      tone(4, melody2[thisNote],noteDuration);//pin 4 or port 1 digital pin
+      tone(6, melody2[thisNote],noteDuration);//pin 6 or port 3 digital pin
       int pauseBetweenNotes = noteDuration * 1.30;
       delay(pauseBetweenNotes);
-      noTone(4);
+      noTone(6);
     }
   }
 }
