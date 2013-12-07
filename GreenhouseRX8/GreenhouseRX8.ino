@@ -58,8 +58,6 @@ void setup () {
 }
 
 void loop () {
-  noTone(6);
-  Serial.println("Main loop");
   set_sleep_mode(SLEEP_MODE_IDLE);
   sleep_mode();
   unsigned long currentMillis = millis();
