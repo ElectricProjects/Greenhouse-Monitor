@@ -25,9 +25,6 @@ int backlightSwitch;
 int tmpHigh;
 int tmpLow;
 byte tmp=0;
-int pkg1=0;
-int pkg2=0;
-int pkg3=0;
 int yCount = 0;
 
 unsigned long interval = 150000;
@@ -80,23 +77,16 @@ void loop () {
       tmpLow=rf12_data[0];
       tmpHigh=rf12_data[0];
     }
-    int* data = (int*) rf12_data;
-    pkg1++;
-    if (pkg1>999){
-      pkg1=0;
-      pkg2++;
-      if(pkg2>999){
-        pkg2=0;
-        pkg3++;
-      }
-    }
-
-    if(rf12_data[0] <tmpLow)
+    else {
+       if(rf12_data[0] <tmpLow  && tmpLow - rf12_data[0] < 15)
       tmpLow=rf12_data[0];
 
     if(rf12_data[0] >tmpHigh)
       tmpHigh=rf12_data[0];
-
+    }
+    
+    int* data = (int*) rf12_data;
+ 
     if(rf12_data[0]<=threshold || rf12_data[0]>=threshold2)
     {
       redLed();
@@ -111,7 +101,6 @@ void loop () {
       lcd.print(tmpHigh);
       lcd.setCursor(15, 3);
       lcd.print(tmpLow);
-      // lcd.print((int) rf12_hdr);
     }
 
     if (RF12_WANTS_ACK)
@@ -186,7 +175,7 @@ void redLed()
 void homeScreen()
 {
   lcd.clear();
-  lcd.print(F("Snowdrift Farms"));
+  lcd.print(F("Snowdrift Farm"));
   lcd.setCursor(0, 1);
   lcd.print(F("Greenhouse Monitor"));
   lcd.setCursor(0, 2);
