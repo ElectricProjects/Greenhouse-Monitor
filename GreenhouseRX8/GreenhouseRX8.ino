@@ -175,7 +175,7 @@ void redLed()
 void homeScreen()
 {
   lcd.clear();
-  lcd.print(F("Snowdrift Farm"));
+  lcd.print(F("Snowdrift Farms"));
   lcd.setCursor(0, 1);
   lcd.print(F("Greenhouse Monitor"));
   lcd.setCursor(0, 2);
